@@ -1,3 +1,5 @@
+const {app} = require('electron')
+
 module.exports = [
     {
         label: 'Menu',

@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, remote} = require('electron')
+const {app, BrowserWindow, Menu, Tray, remote} = require('electron')
 const windowStateKeeper = require('electron-window-state')
 
 const shell = require('electron').shell
@@ -9,11 +9,21 @@ const ipcMain = require('electron').ipcMain
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
+let win, tray
 
 const userDataPath = (app || remote.app).getPath('userData')
 
 console.log(userDataPath)
+
+function createTray() {
+  tray = new Tray('./assets/images/images.jpg')
+
+  const trayMenu = Menu.buildFromTemplate([
+    {role: 'quit'}
+  ])
+
+  tray.setContextMenu(trayMenu)
+}
 
 function createWindow () {
   // Create the browser window.
@@ -62,7 +72,10 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+    createWindow()
+    createTray()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
